@@ -1,0 +1,4 @@
+#Sat Dec 09 18:57:06 ICT 2023
+base.0=C\:\\OLD\\WEBSHIK\\KULIAH\\a\\GYAT-main\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
