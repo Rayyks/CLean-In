@@ -42,7 +42,7 @@ class _DetailPageState extends State<DetailPage> {
       case 'selesai':
         return 'Yey, Pakaian sudah di tangan kamu,\nTerima kasih sudah mempercayai\nClean.In';
       default:
-        return 'Pesanan lagi pending, mohon di tunggu ya 😊';
+        return 'Pesanan lagi pending,\nmohon di tunggu ya 😊';
     }
   }
 
@@ -190,21 +190,23 @@ class _DetailPageState extends State<DetailPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                              'Tanggal Pengambilan: ${orderDetails!['pickup_at']}'),
+                              'Tanggal Pengambilan: ${orderDetails!['pickup_at']} '),
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                              'Waktu Pengambilan: ${orderDetails!['delivery_at']}'),
+                            'Waktu Pengambilan: ${orderDetails?['delivery_at'] ?? "Sedang di tentukan"}',
+                          ),
                         ],
                       ),
                       Divider(),
                       Text(
-                        '${orderDetails!['laundry_type']} & ${orderDetails!['detergen_type']}',
+                        '${orderDetails?['laundry_type']} ${orderDetails?['detergen_type'] != null ? '& ${orderDetails?['detergen_type']}' : ''}',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+
                       SizedBox(height: 8),
                       Text('Item:'),
                       for (var item
@@ -303,10 +305,17 @@ class _DetailPageState extends State<DetailPage> {
 // Function to format the price as IDR
 String formatAsIDR(dynamic amount) {
   final format = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp');
+
   if (amount is String) {
-    return format.format(double.tryParse(amount) ?? 0);
+    double amountValue = double.tryParse(amount) ?? 0;
+
+    // Display 'Menunggu hasil timbangan' when the total price is 0
+    return amountValue == 0
+        ? 'Menunggu hasil timbangan'
+        : format.format(amountValue);
   } else if (amount is num) {
-    return format.format(amount);
+    // Display 'Menunggu hasil timbangan' when the total price is 0
+    return amount == 0 ? 'Menunggu hasil timbangan' : format.format(amount);
   } else {
     return 'Menunggu hasil timbangan';
   }

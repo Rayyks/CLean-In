@@ -205,7 +205,7 @@ class _ProfileTabState extends State<ProfileTab> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: const Text(
-              'Account Setting',
+              'Pengaturan Akun',
               style: TextStyle(
                 fontSize: 18.0,
                 color: Color.fromARGB(255, 177, 162, 162),

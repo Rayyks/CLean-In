@@ -8,6 +8,12 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "badges",
+      "rootUri": "file:///C:/Users/Administrator/AppData/Local/Pub/Cache/hosted/pub.dev/badges-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "bloc",
       "rootUri": "file:///C:/Users/Administrator/AppData/Local/Pub/Cache/hosted/pub.dev/bloc-8.1.2",
       "packageUri": "lib/",
@@ -404,7 +410,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2023-12-21T17:29:02.520104Z",
+  "generated": "2023-12-26T15:08:45.274090Z",
   "generator": "pub",
   "generatorVersion": "3.2.3"
 }

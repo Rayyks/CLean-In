@@ -3,17 +3,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:pra_project/proses.dart';
-import 'package:pra_project/selesai.dart';
+import 'package:pra_project/dashboard.dart';
 
 class PembayaranPage extends StatefulWidget {
   final bool cashViaCourier;
-  final bool transferBank;
 
-  PembayaranPage({
-    required this.cashViaCourier,
-    required this.transferBank,
-  });
+  PembayaranPage({required this.cashViaCourier});
 
   @override
   _PembayaranPageState createState() => _PembayaranPageState();
@@ -208,6 +203,12 @@ class _PembayaranPageState extends State<PembayaranPage> {
                 duration: Duration(seconds: 2),
               ),
             );
+
+            // Redirect to the dashboard using named route
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => DashboardPage()),
+            );
           } else {
             // Handle payment submission error
             print('Failed to submit payment');
@@ -350,46 +351,41 @@ class _PembayaranPageState extends State<PembayaranPage> {
 
                   // Add a "Next" button to navigate to the "Selesai" page
                   ElevatedButton(
-                    onPressed: () async {
-                      if (selectedOrderId != null) {
-                        // Fetch payment status
-                        await fetchPaymentStatus(selectedOrderId);
+                    onPressed: selectedOrderPrice == 0.0
+                        ? null // Disable the button when the price is 0.0
+                        : () async {
+                            if (selectedOrderId != null) {
+                              // Fetch payment status
+                              await fetchPaymentStatus(selectedOrderId);
 
-                        // Check payment status and update UI
-                        if (paymentStatus == 'selesai') {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Pembayaran Selesai'),
-                                content: Text('Pesanan ini sudah dibayar.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          // Call the function to submit payment
-                          submitPayment();
-
-                          // Comment out the navigation to "Selesai" page
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => ProsesPage(),
-                          //   ),
-                          // );
-                        }
-                      }
-                    },
+                              // Check payment status and update UI
+                              if (paymentStatus == 'selesai') {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Pembayaran Selesai'),
+                                      content:
+                                          Text('Pesanan ini sudah dibayar.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                // Call the function to submit payment
+                                submitPayment();
+                              }
+                            }
+                          },
                     child: Text('Next'),
-                  ),
+                  )
                 ],
               ),
             ),

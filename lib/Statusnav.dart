@@ -14,7 +14,6 @@ class _StatusTabState extends State<StatusTab> {
   final List<String> tabTitles = ['Proses', 'Pembayaran', 'Selesai'];
 
   bool cashViaCourier = false;
-  bool transferBank = false;
 
   late ProsesPage prosesPage;
   late PembayaranPage pembayaranPage;
@@ -26,7 +25,6 @@ class _StatusTabState extends State<StatusTab> {
     prosesPage = ProsesPage();
     pembayaranPage = PembayaranPage(
       cashViaCourier: cashViaCourier,
-      transferBank: transferBank,
     );
     selesaiPage = SelesaiPage(
       orderId: '',

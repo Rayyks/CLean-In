@@ -8,6 +8,13 @@ class LaundryApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/dashboard': (context) => DashboardPage(),
+        '/home': (context) => HomeTab(),
+        '/status': (context) => StatusTab(),
+        '/notifications': (context) => NotificationsTab(),
+        '/profile': (context) => ProfileTab(),
+      },
       title: 'Laundry App',
       theme: ThemeData(
         primaryColor: Colors.blue,
@@ -59,7 +66,7 @@ class _DashboardPageState extends State<DashboardPage> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: 'Beranda',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.assignment),
@@ -67,11 +74,11 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.notifications),
-              label: 'Notifications',
+              label: 'Notifikasi',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              label: 'Profile',
+              label: 'Profil',
             ),
           ],
         ),

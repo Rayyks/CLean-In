@@ -88,8 +88,8 @@ class _SelesaiPageState extends State<SelesaiPage> {
                       _buildOrderInfo('Nomor Pemesanan', widget.orderId),
                       _buildDeliveryInfo('Waktu Pengembalian',
                           orderDetails['pesanan_laundry']['delivery_at'] ?? ''),
-                      _buildOrderInfo(
-                          'Metode Pembayaran', 'Bayar di tempat / kurir'),
+                      _buildOrderInfo('Metode Pembayaran',
+                          'Bayar di tempat / melalui kurir'),
                       const SizedBox(height: 20),
                       _buildSectionTitle('Status Pembayaran'),
                       Center(
@@ -158,12 +158,17 @@ class _SelesaiPageState extends State<SelesaiPage> {
   }
 
   Widget _buildDeliveryInfo(String title, String value) {
-    // Convert the date string to DateTime
-    DateTime deliveryDate = DateTime.parse(value);
-    // Format the date as "EEEE, MMMM d, yyyy"
-    String formattedDate =
-        DateFormat('EEEE, MMMM d, yyyy').format(deliveryDate);
-
-    return _buildOrderInfo(title, formattedDate);
+    try {
+      // Attempt to parse the date string
+      DateTime deliveryDate = DateTime.parse(value);
+      // Format the date as "EEEE, d MMMM yyyy" in Indonesian
+      String formattedDate =
+          DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(deliveryDate);
+      return _buildOrderInfo(title, formattedDate);
+    } catch (error) {
+      // Handle date parsing error
+      print('Error parsing date: $error');
+      return _buildOrderInfo(title, 'Masih di proses');
+    }
   }
 }

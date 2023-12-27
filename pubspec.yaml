@@ -36,6 +36,7 @@ dependencies:
   shared_preferences: ^2.2.2
   provider: ^6.1.1
   dio: ^5.3.3
+  badges: ^3.1.2
   toast: ^0.3.0
   flutter_secure_storage: ^9.0.0
   device_info_plus: ^9.1.0

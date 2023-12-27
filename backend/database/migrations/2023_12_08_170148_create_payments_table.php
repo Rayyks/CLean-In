@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pesanan_laundry_id')->constrained('pesanan_laundry')->onDelete('cascade');
             $table->string('status');
-            // Add other payment fields as needed
             $table->timestamps();
         });
     }

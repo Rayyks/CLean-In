@@ -210,19 +210,19 @@ class PesananController extends Controller
 
         switch ($laundryType) {
             case 'Premium':
-                $calculatedPrice = $laundryWeight * 6000;
+                $calculatedPrice = $laundryWeight * 1000;
                 break;
             case 'Cuci Setrika':
-                $calculatedPrice = $laundryWeight * 5000;
+                $calculatedPrice = $laundryWeight * 1000;
                 break;
             case 'Cuci Kering':
-                $calculatedPrice = $laundryWeight * 3000;
+                $calculatedPrice = $laundryWeight * 1000;
                 break;
             case 'Setrika':
-                $calculatedPrice = $laundryWeight * 2000;
+                $calculatedPrice = $laundryWeight * 1000;
                 break;
             case 'Khusus':
-                $calculatedPrice = $laundryWeight * 8000;
+                $calculatedPrice = $laundryWeight * 2000;
                 break;
             default:
                 $calculatedPrice = $laundryWeight * $defaultPricePerKg;

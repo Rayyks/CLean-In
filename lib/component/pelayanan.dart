@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:pra_project/dashboard.dart';
+import 'package:pra_project/proses.dart';
 
 class ServiceComponent extends StatefulWidget {
   @override
@@ -94,6 +94,8 @@ class _ServiceComponentState extends State<ServiceComponent> {
   }
 
   Future<void> sendRequest() async {
+    BuildContext currentContext = context;
+
     try {
       // Check if at least one item is selected
       if (laundryItemsMap.values.every((value) => !value)) {
@@ -144,13 +146,14 @@ class _ServiceComponentState extends State<ServiceComponent> {
           'Authorization': 'Bearer $accessToken',
         },
       );
-
       if (response.statusCode == 200) {
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => DashboardPage()),
+          currentContext, // Use the stored context
+          MaterialPageRoute(
+            builder: (context) => ProsesPage(),
+          ),
         );
-        showSuccessNotification(context);
+        showSuccessNotification(currentContext);
       } else {
         final errorMessage = json.decode(response.body)['message'];
         print(errorMessage);

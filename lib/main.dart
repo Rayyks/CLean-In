@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
 import 'login.dart';
 
-void main() {
+void main() async {
+  await initializeDateFormatting('id_ID', null);
   runApp(LaundryApp());
 }
 

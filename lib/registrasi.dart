@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:pra_project/login.dart';
 
 void main() {
@@ -25,6 +26,7 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -36,6 +38,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Future<void> register() async {
     try {
+      if (_formKey.currentState?.validate() == false) {
+        // Skip registration if form validation fails
+        return;
+      }
+
       final response = await http.post(
         Uri.parse('http://127.0.0.1:8000/api/register'),
         body: {
@@ -63,17 +70,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
           MaterialPageRoute(builder: (context) => LoginPage()),
         );
       } else {
-        final errorMessage = response.body;
-        print(errorMessage);
-        setState(() {
-          this.errorMessage = errorMessage;
-        });
+        final responseData = json.decode(response.body);
+
+        // Check if the response contains an 'errors' key
+        if (responseData.containsKey('errors')) {
+          Map<String, dynamic> errors = responseData['errors'];
+
+          // Check if the error is due to duplicate email
+          if (errors.containsKey('email') &&
+              errors['email'][0] == 'Email udah di gunakan.') {
+            setState(() {
+              errorMessage =
+                  'Email sudah digunakan. Silakan gunakan email lain.';
+            });
+          } else {
+            // Show other registration errors
+            setState(() {
+              errorMessage = response.body;
+            });
+          }
+        }
       }
     } catch (error) {
       print('Error: $error');
       setState(() {
-        this.errorMessage =
-            'Isi datanya dulu sayang. Baru pencet tombol daftar.';
+        errorMessage = 'Mohon untuk isi datanya dengan benar.';
       });
     }
   }
@@ -87,117 +108,170 @@ class _RegistrationPageState extends State<RegistrationPage> {
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image.asset(
-                'Images/logo.png',
-                width: 100.0,
-                height: 100.0,
-              ),
-              SizedBox(height: 10.0),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Nama',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'Images/logo.png',
+                  width: 100.0,
+                  height: 100.0,
+                ),
+                SizedBox(height: 10.0),
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Nama',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.person),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  prefixIcon: Icon(Icons.person),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mohon isi datanya';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              SizedBox(height: 10.0),
-              TextField(
-                controller: addressController,
-                decoration: InputDecoration(
-                  labelText: 'Alamat',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                SizedBox(height: 10.0),
+                TextFormField(
+                  controller: addressController,
+                  decoration: InputDecoration(
+                    labelText: 'Alamat',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.location_on),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  prefixIcon: Icon(Icons.location_on),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mohon isi datanya';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              SizedBox(height: 10.0),
-              TextField(
-                controller: phoneController,
-                decoration: InputDecoration(
-                  labelText: 'Nomor HP',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                SizedBox(height: 10.0),
+                TextFormField(
+                  controller: phoneController,
+                  decoration: InputDecoration(
+                    labelText: 'Nomor HP',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.phone),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  prefixIcon: Icon(Icons.phone),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mohon isi datanya';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              SizedBox(height: 10.0),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                SizedBox(height: 10.0),
+                TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.email),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
+                    errorText: _formKey.currentState?.validate() == true &&
+                            !isValidEmail(emailController.text)
+                        ? 'Email tidak valid'
+                        : null,
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  prefixIcon: Icon(Icons.email),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mohon isi datanya';
+                    } else if (!isValidEmail(value)) {
+                      return 'Email tidak valid';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              SizedBox(height: 10.0),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                SizedBox(height: 10.0),
+                TextFormField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.lock),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  prefixIcon: Icon(Icons.lock),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mohon isi datanya';
+                    }
+                    return null;
+                  },
                 ),
-                obscureText: true,
-              ),
-              SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: register,
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.deepPurple,
-                  onPrimary: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                ),
-                child: Text(
-                  'Daftar',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-              SizedBox(height: 10.0),
-              Text(
-                errorMessage,
-                style: TextStyle(color: Colors.red),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Sudah punya akun? "),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-                    },
-                    child: Text('Masuk'),
+                SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: register,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.deepPurple,
+                    onPrimary: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   ),
-                ],
-              ),
-            ],
+                  child: Text(
+                    'Daftar',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  errorMessage,
+                  style: TextStyle(color: Colors.red),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Sudah punya akun? "),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
+                      child: Text('Masuk'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  // Add this function to validate email using regex
+  bool isValidEmail(String email) {
+    // Define a regular expression for email validation
+    final RegExp regex = RegExp(
+      r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$',
+    );
+    return regex.hasMatch(email);
   }
 }

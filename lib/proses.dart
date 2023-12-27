@@ -164,7 +164,7 @@ class _ProsesPageState extends State<ProsesPage> {
                                               ),
                                             ),
                                             Text(
-                                              'Waktu: ${DateFormat.yMMMMd().add_jm().format(DateTime.parse(order['created_at']))}',
+                                              'Waktu:${DateFormat('dd MMMM yyyy, HH:mm', 'id_ID').format(DateTime.parse(order['created_at']))}',
                                               style: TextStyle(
                                                 fontSize: 14,
                                               ),

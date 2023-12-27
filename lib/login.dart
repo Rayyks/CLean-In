@@ -22,7 +22,13 @@ class LaundryApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -35,96 +41,129 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image.asset(
-                'Images/logo.png',
-                width: 100.0,
-                height: 100.0,
-              ),
-              SizedBox(height: 20.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Masukkan akun anda',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'Images/logo.png',
+                  width: 100.0,
+                  height: 100.0,
+                ),
+                SizedBox(height: 20.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Masukkan akun anda',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                  ],
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.email),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
+                    errorText: _formKey.currentState?.validate() == true &&
+                            emailController.text.isEmpty
+                        ? 'Mohon isi datanya'
+                        : null,
                   ),
-                ],
-              ),
-              SizedBox(height: 20.0),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mohon isi datanya';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 10.0),
+                TextFormField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: Icon(Icons.lock),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
+                    errorText: _formKey.currentState?.validate() == true &&
+                            passwordController.text.isEmpty
+                        ? 'Mohon isi datanya'
+                        : null,
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  prefixIcon: Icon(Icons.email),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mohon isi datanya';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              SizedBox(height: 10.0),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                SizedBox(height: 10.0),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text('Lupa Password?'),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  prefixIcon: Icon(Icons.lock),
                 ),
-                obscureText: true,
-              ),
-              SizedBox(height: 10.0),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: Text('Lupa Password?'),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  loginUser(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.deepPurple,
-                  onPrimary: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                ),
-                child: Text(
-                  'Masuk',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-              SizedBox(height: 10.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Belum punya akun?"),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RegistrationPage()),
-                      );
-                    },
-                    child: Text('Daftar Akun'),
+                SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      loginUser(context);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.deepPurple,
+                    onPrimary: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   ),
-                ],
-              ),
-            ],
+                  child: Text(
+                    'Masuk',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Belum punya akun?"),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegistrationPage()),
+                        );
+                      },
+                      child: Text('Daftar Akun'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -146,12 +185,53 @@ class LoginPage extends StatelessWidget {
       if (contentType != null && contentType.contains('application/json')) {
         // If the response is in JSON format, decode the body
         final responseData = json.decode(response.body);
-        // print(
-        //     'Response status: ${response.statusCode}'); // Access response here if it's not null
-        // print('Response body: ${response.body}');
 
-        // Check if the response contains a 'user' key
-        if (responseData.containsKey('user')) {
+        // Check if the response contains an 'errors' key
+        if (responseData.containsKey('errors')) {
+          Map<String, dynamic> errors = responseData['errors'];
+          errors.forEach((key, value) {
+            // Highlight the input fields with red color
+            switch (key) {
+              case 'email':
+                emailController.clear();
+                break;
+              case 'password':
+                passwordController.clear();
+                break;
+              // Add more cases for other fields if needed
+            }
+
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('$key: $value'),
+                duration: Duration(seconds: 3),
+              ),
+            );
+          });
+
+          // Show error popup only for invalid login data
+          if (errors.keys.contains('email') ||
+              errors.keys.contains('password')) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Login Failed'),
+                  content: Text('Invalid email or password. Please try again.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        } else if (responseData.containsKey('user')) {
           User user = User.fromJson(responseData['user']);
           showLoginSuccessNotification(context);
 
@@ -193,7 +273,7 @@ void showLoginSuccessNotification(BuildContext context) {
 void showLoginErrorNotification(BuildContext context, String errorMessage) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text('Login failed: $errorMessage'),
+      content: Text('Login Gagal: Mohon cek datanya kembali '),
       duration: Duration(seconds: 3),
     ),
   );
@@ -206,12 +286,13 @@ class User {
   final String phone;
   final String address;
 
-  User(
-      {required this.id,
-      required this.name,
-      required this.phone,
-      required this.email,
-      required this.address});
+  User({
+    required this.id,
+    required this.name,
+    required this.phone,
+    required this.email,
+    required this.address,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
